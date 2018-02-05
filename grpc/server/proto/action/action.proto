@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dronecore.rpc.action;
+
+option java_package = "io.dronecore.action";
+option java_outer_classname = "ActionProto";
+
+service ActionService {
+    rpc Arm(ArmRequest) returns(ActionResult) {}
+    rpc TakeOff(TakeOffRequest) returns(ActionResult) {}
+    rpc Land(LandRequest) returns(ActionResult) {}
+}
+
+message UUID {
+    uint64 value = 1;
+}
+
+message ArmRequest {
+    UUID uuid = 1;
+}
+
+message TakeOffRequest {
+    UUID uuid = 1;
+}
+
+message LandRequest {
+    UUID uuid = 1;
+}
+
+message ActionResult {
+    enum Result {
+        SUCCESS = 0;
+        NO_DEVICE = 1;
+        CONNECTION_ERROR = 2;
+        BUSY = 3;
+        COMMAND_DENIED = 4;
+        COMMAND_DENIED_LANDED_STATE_UNKNOWN = 5;
+        COMMAND_DENIED_NOT_LANDED = 6;
+        TIMEOUT = 7;
+        UNKNOWN = 8;
+    }
+
+    Result result = 1;
+    string result_str = 2;
+}

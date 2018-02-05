@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/hieu/DroneCore/example/takeoff_land/takeoff_and_land.cpp
+dronecore/dronecore.h
+-
+iostream
+-
+thread
+-
+chrono
+-
+cstdint
+-
+

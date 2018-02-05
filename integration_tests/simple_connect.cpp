@@ -1,0 +1,49 @@
+#include <iostream>
+#include "integration_test_helper.h"
+#include "global_include.h"
+#include "dronecore.h"
+
+using namespace dronecore;
+
+TEST_F(SitlTest, TwoConnections)
+{
+    dronecore::DroneCore *dc;
+    dc = new dronecore::DroneCore();
+    std::cout << "started" << std::endl;
+
+    ASSERT_EQ(dc->add_udp_connection(14540), DroneCore::ConnectionResult::SUCCESS);
+
+    ASSERT_EQ(dc->add_udp_connection(14550), DroneCore::ConnectionResult::SUCCESS);
+
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    std::vector<uint64_t> uuids = dc->device_uuids();
+
+    for (auto it = uuids.begin(); it != uuids.end(); ++it) {
+        std::cout << "found device with UUID: " << *it << std::endl;
+    }
+
+    ASSERT_EQ(uuids.size(), 1);
+    uint64_t uuid = uuids[0];
+
+    std::cout << "deleting it" << std::endl;
+    delete dc;
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    dc = new dronecore::DroneCore();
+
+    ASSERT_EQ(dc->add_udp_connection(14540), DroneCore::ConnectionResult::SUCCESS);
+
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+    uuids = dc->device_uuids();
+
+    ASSERT_EQ(uuids.size(), 1);
+    EXPECT_EQ(uuid, uuids[0]);
+
+    std::cout << "created and started yet again" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    delete dc;
+    std::cout << "exiting" << std::endl;
+}
